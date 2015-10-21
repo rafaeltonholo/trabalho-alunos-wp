@@ -11,9 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Media.Capture;
+using Windows.Storage.Streams;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace CRUDAlunos.ViewModels {
     public class AlunoViewModel : BaseViewModel<AlunoView, Aluno> {
@@ -25,7 +27,7 @@ namespace CRUDAlunos.ViewModels {
         private DelegateCommand _deleteCommand;
         private DelegateCommand _fotoCommand;
         private AlunoView _currentModel;
-        private MediaCapture _cameraChooser;
+        private BitmapImage _alunoBitmap;
 
         #endregion
 
@@ -45,6 +47,20 @@ namespace CRUDAlunos.ViewModels {
         }
 
         public Visibility CanDelete { get { return VMItem.Id == 0 ? Visibility.Collapsed : Visibility.Visible; } }
+
+        public BitmapImage AlunoBitmap {
+            get {
+                if(_alunoBitmap == null) {
+                    AlunoBitmap = ConvertByteArrayToBitMap(VMItem.Foto);
+                }
+
+                return _alunoBitmap;
+            }
+            set {
+                _alunoBitmap = value;
+                RaisedPropertyChanged(() => AlunoBitmap);
+            }
+        }
 
         #endregion
 
@@ -70,11 +86,6 @@ namespace CRUDAlunos.ViewModels {
         public override void ReloadData() {
             this.LoadData();
         }
-
-        public async void CameraCapturePhoto() {
-            //CameraCaptureUI
-        }
-
         #endregion
 
         #region Commands
@@ -89,15 +100,15 @@ namespace CRUDAlunos.ViewModels {
 
         public DelegateCommand AddCommand {
             get {
-                return _addCommand ?? (_addCommand = new DelegateCommand(() => {
+                return _addCommand ?? (_addCommand = new DelegateCommand(async () => {
                     if (VMItem.Id == 0) {
                         Application.Add(VMItem);
                         MessageDialog dialog = new MessageDialog("Registro cadastrado com sucesso!", "Sucesso");
-                        dialog.ShowAsync();
+                        await dialog.ShowAsync();
                     } else {
                         Application.Update(VMItem);
                         MessageDialog dialog = new MessageDialog("Registro atualizado com sucesso!", "Sucesso");
-                        dialog.ShowAsync();
+                        await dialog.ShowAsync();
                     }
                     Page.Frame.Navigate(typeof(MainPage));
                 }));
@@ -106,11 +117,10 @@ namespace CRUDAlunos.ViewModels {
 
         public DelegateCommand DeleteCommand {
             get {
-                return _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
+                return _deleteCommand ?? (_deleteCommand = new DelegateCommand(async () => {
                     Application.Remove(VMItem);
-                    //Navigation.Item = null;
                     MessageDialog dialog = new MessageDialog("Registro excluído com sucesso", "Sucesso");
-                    dialog.ShowAsync();
+                    await dialog.ShowAsync();
                     Page.Frame.Navigate(typeof(MainPage));
                 }));
             }
@@ -119,10 +129,33 @@ namespace CRUDAlunos.ViewModels {
         public DelegateCommand FotoCommand {
             get {
                 return _fotoCommand ?? (_fotoCommand = new DelegateCommand(() => {
-                    MessageDialog dialog = new MessageDialog("Foto", "Sucesso");
-                    dialog.ShowAsync();
+                    EventHandler<PhotoTakedEventArgs> photoTakedEvent = new EventHandler<PhotoTakedEventArgs>(AlunoViewModel_PhotoTaked);
+                    Page.Frame.Navigate(typeof(CameraPreview), photoTakedEvent);
                 }));
             }
+        }
+
+        private void AlunoViewModel_PhotoTaked(object sender, PhotoTakedEventArgs e) {
+            this.VMItem.Foto = e.ImageSource;
+
+            AlunoBitmap = ConvertByteArrayToBitMap(e.ImageSource);
+        }
+
+        private BitmapImage ConvertByteArrayToBitMap(byte[] byteArray) {
+            BitmapImage bitmap = null;
+            if (byteArray.Length > 0) {
+                using (InMemoryRandomAccessStream ms = new InMemoryRandomAccessStream()) {
+                    using (DataWriter writer = new DataWriter(ms.GetOutputStreamAt(0))) {
+                        writer.WriteBytes(byteArray);
+                        writer.StoreAsync().GetResults();
+                    }
+
+                    bitmap = new BitmapImage();
+                    bitmap.SetSource(ms);
+                }
+            }
+
+            return bitmap;
         }
 
         #endregion

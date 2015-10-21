@@ -42,6 +42,7 @@ namespace CRUDAlunos.Util {
             DependencyCore.Instance.AddBinding<IBaseRepository<Aluno>, AlunoRepository>();
 
             DependencyCore.Instance.AddBinding<IViewModel<AlunoView>, AlunoViewModel>();
+            DependencyCore.Instance.AddBinding<ICameraPreviewViewModel, CameraPreviewViewModel>();
 
             DBHelper.CreateDatabase();
         }

@@ -27,5 +27,6 @@
     <Capability Name="internetClientServer" />
     <Capability Name="picturesLibrary" />
     <m3:Capability Name="contacts" />
+    <DeviceCapability Name="webcam" />
   </Capabilities>
 </Package>

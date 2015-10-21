@@ -90,9 +90,17 @@
     <Compile Include="Util\InitializerModule.cs" />
     <Compile Include="ViewModels\AlunoViewModel.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ICameraPreviewViewModel.cs" />
     <Compile Include="ViewModels\Base\IViewModel.cs" />
+    <Compile Include="ViewModels\CameraPreviewViewModel.cs" />
     <Compile Include="Views\AlunoEditView.xaml.cs">
       <DependentUpon>AlunoEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CameraCaptureView.xaml.cs">
+      <DependentUpon>CameraCaptureView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CameraPreview.xaml.cs">
+      <DependentUpon>CameraPreview.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +126,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AlunoEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CameraCaptureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CameraPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
