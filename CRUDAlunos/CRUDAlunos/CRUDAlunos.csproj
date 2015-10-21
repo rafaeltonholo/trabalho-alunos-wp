@@ -96,9 +96,6 @@
     <Compile Include="Views\AlunoEditView.xaml.cs">
       <DependentUpon>AlunoEditView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CameraCaptureView.xaml.cs">
-      <DependentUpon>CameraCaptureView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\CameraPreview.xaml.cs">
       <DependentUpon>CameraPreview.xaml</DependentUpon>
     </Compile>
@@ -126,10 +123,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AlunoEditView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\CameraCaptureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
